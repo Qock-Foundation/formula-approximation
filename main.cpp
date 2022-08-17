@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-const int OP_MAX_SIZE = 30;
+const int OP_MAX_SIZE = 20;
 const int EPOCHS = 1;
 const int GENS = 1000000;
 const int BIRTHS = 200000;
@@ -215,7 +215,7 @@ double CalcError(const std::shared_ptr<Operation> &op, const std::vector<std::pa
     return res;
 }
 
-static const std::vector<std::pair<std::string, std::function<double(double)>>> unary_functions = {
+const std::vector<std::pair<std::string, std::function<double(double)>>> unary_functions = {
         {"-",     [](double x) { return -x; }},
         {"sqrt",  [](double x) { return sqrt(x); }},
         {"sqrt3", [](double x) { return pow(x, 1 / 3.0); }},
@@ -225,7 +225,7 @@ static const std::vector<std::pair<std::string, std::function<double(double)>>> 
         {"acos",  [](double x) { return acos(x); }},
 };
 
-static const std::vector<std::pair<std::string, std::function<double(double, double)>>> binary_functions = {
+const std::vector<std::pair<std::string, std::function<double(double, double)>>> binary_functions = {
         {"+", [](double x, double y) { return x + y; }},
         {"*", [](double x, double y) { return x * y; }},
         {"/", [](double x, double y) { return x / y; }},
@@ -244,6 +244,7 @@ Approx(const std::vector<std::pair<double, double>> &input, const std::vector<do
                 std::make_shared<Constant>(2),
                 std::make_shared<Constant>(3),
                 std::make_shared<Constant>(4),
+                std::make_shared<Constant>(5),
                 std::make_shared<Constant>(M_PI),
         };
 
@@ -336,19 +337,9 @@ int main() {
             if (t * t > 2 * x * x) {
                 input.emplace_back(t, x);
                 output.push_back(a1[t][T + x] / (sqrt(2 / M_PI) * pow(t * t - 2 * x * x, -0.25)));
-                std::cout << output.back() << ' ';
             }
         }
-        std::cout << std::endl;
     }
-
-//    std::vector<std::pair<double, double>> input = {
-//            {1, 3},
-//            {2, 1},
-//            {3, 4},
-//            {4, 8}
-//    };
-//    std::vector<double> output = {13, 7, 37, 112};
 
     auto ans = Approx(input, output);
     std::cout << "Error = " << CalcError(ans, input, output) << ", ans = " << *ans << std::endl;
